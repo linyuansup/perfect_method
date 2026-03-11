@@ -1,0 +1,132 @@
+\documentclass{article}
+\textheight 23.5cm \textwidth 15.8cm
+%\leftskip -1cm
+\topmargin -1.5cm \oddsidemargin 0.3cm \evensidemargin -0.3cm
+%\documentclass[final]{siamltex}
+
+\usepackage{graphicx}
+\usepackage{epsfig}
+\usepackage{amsmath}
+\usepackage{amsthm}
+\usepackage{amssymb}
+\usepackage{mathrsfs}
+\usepackage{float}
+\usepackage{multirow}
+\usepackage{verbatim}
+\usepackage{fancyhdr}
+\usepackage{subfigure}
+\usepackage{color}
+\usepackage{mathtools}
+\usepackage{mathrsfs}
+%\usepackage{natbib}
+\usepackage{sectsty}
+%\usepackage[title]{appendix}
+\usepackage{threeparttable}
+\usepackage{dcolumn}
+\usepackage{booktabs}
+\usepackage{indentfirst}
+\usepackage{setspace}
+\usepackage{bm}
+\usepackage{enumerate}
+\usepackage{geometry}
+
+\title{Problem 1.6: Golden Section Search}
+\author{Tianyang Li}
+
+\begin{document}
+\maketitle
+
+\section{Introduction}
+
+This problem asks for the minimizer of the one-dimensional function
+\[
+    f(x) = e^{-x} + x^2
+\]
+on the interval $[-1,1]$ using the Golden Section Search method with accuracy requirement
+\[
+    \epsilon = 0.1.
+\]
+The goal is to iteratively shrink the search interval until its length is smaller than the prescribed tolerance, and then use the midpoint of the final interval as the approximate minimizer.
+
+\section{Method}
+
+Golden Section Search is a derivative-free method for minimizing a unimodal function on a closed interval. Starting from
+\[
+    [a_0,b_0] = [-1,1],
+\]
+we define the golden ratio coefficient
+\[
+    \tau = \frac{\sqrt{5}-1}{2} \approx 0.618034.
+\]
+At each iteration, two interior points are chosen as
+\[
+    x_1 = b - \tau(b-a), \qquad x_2 = a + \tau(b-a).
+\]
+If $f(x_1) < f(x_2)$, then the new interval is $[a,x_2]$; otherwise, the new interval is $[x_1,b]$. This process is repeated until
+\[
+    |b-a| \le \epsilon.
+\]
+
+For this problem, the function is
+\[
+    f(x) = e^{-x} + x^2,
+\]
+which is smooth and unimodal on $[-1,1]$, so Golden Section Search is applicable.
+
+\section{Result}
+
+The interval updates produced by the Rust program are listed in Table~\ref{tab:golden}.
+
+\begin{table}[H]
+    \centering
+    \begin{tabular}{ccccc}
+        \toprule
+        Iteration & $a$     & $b$    & $L$    & x\_mid \\
+        \midrule
+        1         & -1.0000 & 1.0000 & 2.0000 & 0.0000 \\
+        2         & -0.2361 & 1.0000 & 1.2361 & 0.3820 \\
+        3         & -0.2361 & 0.5279 & 0.7639 & 0.1459 \\
+        4         & 0.0557  & 0.5279 & 0.4721 & 0.2918 \\
+        5         & 0.2361  & 0.5279 & 0.2918 & 0.3820 \\
+        6         & 0.2361  & 0.4164 & 0.1803 & 0.3262 \\
+        7         & 0.3050  & 0.4164 & 0.1115 & 0.3607 \\
+        \bottomrule
+    \end{tabular}
+    \caption{Golden Section Search iterations for $f(x)=e^{-x}+x^2$.}
+    \label{tab:golden}
+\end{table}
+
+After the seventh update, the algorithm terminates with the final interval
+\[
+    [a,b] \approx [0.304952, 0.373835],
+\]
+whose length is
+\[
+    b-a \approx 0.068884 < 0.1.
+\]
+Therefore the approximate minimizer is taken as the midpoint of this interval:
+\[
+    x^* \approx \frac{a+b}{2} = 0.3394.
+\]
+The corresponding function value is
+\[
+    f(x^*) \approx 0.8274.
+\]
+
+\section{Conclusion}
+
+Using Golden Section Search on the interval $[-1,1]$ with tolerance $\epsilon = 0.1$, the minimizer of
+\[
+    f(x) = e^{-x} + x^2
+\]
+is approximated by
+\[
+    x^* \approx 0.3394,
+\]
+with minimum function value
+\[
+    f(x^*) \approx 0.8274.
+\]
+The method reduces the interval length monotonically and reaches the desired accuracy after seven iterations. This demonstrates that Golden Section Search is an efficient derivative-free method for one-dimensional unimodal optimization problems.
+
+\end{document}

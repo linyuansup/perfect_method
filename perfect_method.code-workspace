@@ -7,6 +7,9 @@
 	"settings": {
 		"workbench.colorCustomizations": {
 			"editor.lineHighlightBorder": "#ffffff3d",
+			"activityBar.background": "#351579",
+			"titleBar.activeBackground": "#4B1EA9",
+			"titleBar.activeForeground": "#FAF9FE",
 			"[Vira*]": {
 				"statusBar.debuggingBackground": "#80CBC433",
 				"statusBar.debuggingForeground": "#80CBC4",
@@ -61,7 +64,31 @@
 				"statusBarItem.remoteHoverForeground": "#000000"
 			},
 			"statusBar.noFolderBackground": "#351579",
-			"statusBar.noFolderForeground": "#FAF9FE"
+			"statusBar.noFolderForeground": "#FAF9FE",
+			"titleBar.inactiveBackground": "#351579",
+			"titleBar.inactiveForeground": "#FAF9FE",
+			"statusBar.background": "#351579",
+			"statusBar.foreground": "#FAF9FE",
+			"statusBar.debuggingBackground": "#351579",
+			"statusBar.debuggingForeground": "#FAF9FE"
+		},
+		"files.exclude": {
+			"**/.git": true,
+			"**/.svn": true,
+			"**/.hg": true,
+			"**/.DS_Store": true,
+			"**/Thumbs.db": true,
+			"**/flutter/ephemeral": true,
+			"**/Flutter/ephemeral": true,
+			"**/.symlinks": true,
+			"**/target": true,
+			"**/*.aux": true,
+			"**/*.fdb_latexmk": true,
+			"**/*.fls": true,
+			"**/*.log": true,
+			"**/*.pdf": true,
+			"**/*.synctex.gz": true,
+			"**/.plugin_symlinks": true
 		}
 	}
 }

@@ -1,0 +1,165 @@
+\documentclass{article}
+\textheight 23.5cm \textwidth 15.8cm
+%\leftskip -1cm
+\topmargin -1.5cm \oddsidemargin 0.3cm \evensidemargin -0.3cm
+%\documentclass[final]{siamltex}
+
+\usepackage{graphicx}
+\usepackage{epsfig}
+\usepackage{amsmath}
+\usepackage{amsthm}
+\usepackage{amssymb}
+\usepackage{mathrsfs}
+\usepackage{float}
+\usepackage{multirow}
+\usepackage{verbatim}
+\usepackage{fancyhdr}
+\usepackage{subfigure}
+\usepackage{color}
+\usepackage{mathtools}
+\usepackage{mathrsfs}
+%\usepackage{natbib}
+\usepackage{sectsty}
+%\usepackage[title]{appendix}
+\usepackage{threeparttable}
+\usepackage{dcolumn}
+\usepackage{booktabs}
+\usepackage{indentfirst}
+\usepackage{setspace}
+\usepackage{bm}
+\usepackage{enumerate}
+\usepackage{geometry}
+
+\title{Problem 1.7: Fibonacci Search and Quadratic Interpolation}
+\author{Tianyang Li}
+
+\begin{document}
+\maketitle
+
+\section{Introduction}
+
+This problem asks for the minimizer of the one-dimensional function
+\[
+    f(x) = x^4 + 2x + 4
+\]
+on the interval $[-1,0]$ with accuracy requirement
+\[
+    \epsilon = 0.01.
+\]
+Two numerical methods are used: Fibonacci Search and Quadratic Interpolation. The purpose is to compare the approximate minimizer obtained by these two methods and verify that both methods can achieve the required two-decimal-place accuracy.
+
+\section{Method}
+
+The objective function is
+\[
+    f(x) = x^4 + 2x + 4.
+\]
+Its derivative is
+\[
+    f'(x) = 4x^3 + 2.
+\]
+Setting $f'(x)=0$ gives the exact stationary point
+\[
+    x^* = -\sqrt[3]{\frac{1}{2}} \approx -0.793701,
+\]
+which lies in the interval $[-1,0]$. This value is used as a reference for the numerical results.
+
+For Fibonacci Search, the interval is repeatedly reduced according to Fibonacci ratios. Since
+\[
+    \frac{b-a}{\epsilon} = \frac{1}{0.01} = 100,
+\]
+the first Fibonacci number not smaller than $100$ is
+\[
+    F_{11} = 144.
+\]
+Therefore the Rust implementation uses the corresponding Fibonacci sequence to determine the internal test points and finally returns the midpoint of the last interval.
+
+For Quadratic Interpolation, three points $a$, $b$, and $c$ are maintained, and a parabola passing through $(a,f(a))$, $(b,f(b))$, and $(c,f(c))$ is constructed. Its vertex gives the next approximation
+\[
+    x_{new} = b - \frac{1}{2}
+    \frac{(b-a)^2(f(b)-f(c)) - (b-c)^2(f(b)-f(a))}{(b-a)(f(b)-f(c)) - (b-c)(f(b)-f(a))}.
+\]
+The iteration stops when two consecutive approximations satisfy
+\[
+    |x_{new} - x_{old}| < \epsilon.
+\]
+
+\section{Result}
+
+Running the Rust program gives the following approximations:
+\[
+    x_{\text{fib}} \approx -0.7917,
+    \qquad
+    x_{\text{quad}} \approx -0.7929.
+\]
+The corresponding function values are
+\[
+    f(x_{\text{fib}}) \approx 2.809465,
+    \qquad
+    f(x_{\text{quad}}) \approx 2.809452.
+\]
+
+For Fibonacci Search, the final interval is approximately
+\[
+    [a,b] \approx [-0.798611, -0.784722],
+\]
+so its midpoint gives the reported minimizer
+\[
+    x_{\text{fib}} = \frac{a+b}{2} \approx -0.7917.
+\]
+The final interval length is
+\[
+    b-a \approx 0.013889,
+\]
+which is consistent with the required accuracy.
+
+For Quadratic Interpolation, the algorithm converges after $4$ iterations and produces
+\[
+    x_{\text{quad}} \approx -0.7929.
+\]
+
+To compare the two methods with the exact solution, Table~\ref{tab:compare} is given below.
+
+\begin{table}[H]
+    \centering
+    \begin{tabular}{lccc}
+        \toprule
+        Method                  & Approximate minimizer & Function value & Absolute error \\
+        \midrule
+        Exact solution          & -0.793701             & 2.809449       & 0              \\
+        Fibonacci Search        & -0.7917               & 2.809465       & 0.002034       \\
+        Quadratic Interpolation & -0.7929               & 2.809452       & 0.000823       \\
+        \bottomrule
+    \end{tabular}
+    \caption{Comparison of the exact solution and the two numerical methods.}
+    \label{tab:compare}
+\end{table}
+
+Both approximations are correct to two decimal places:
+\[
+    x_{\text{fib}} \approx -0.79,
+    \qquad
+    x_{\text{quad}} \approx -0.79.
+\]
+
+\section{Conclusion}
+
+For the function
+\[
+    f(x) = x^4 + 2x + 4
+\]
+on the interval $[-1,0]$, both Fibonacci Search and Quadratic Interpolation successfully locate the minimizer with accuracy better than $\epsilon=0.01$. The Fibonacci method gives
+\[
+    x^* \approx -0.7917,
+\]
+while Quadratic Interpolation gives
+\[
+    x^* \approx -0.7929.
+\]
+The exact minimizer is
+\[
+    x^* = -\sqrt[3]{\frac{1}{2}} \approx -0.7937.
+\]
+Comparing the errors shows that the Quadratic Interpolation result is slightly closer to the exact solution, but both methods meet the requirement of two-decimal-place accuracy.
+
+\end{document}

@@ -2,7 +2,6 @@ fn f(x: f64) -> f64 {
     x.powi(4) + 2.0 * x + 4.0
 }
 
-/// 1. Fibonacci 搜索法
 fn fibonacci_search(mut a: f64, mut b: f64, epsilon: f64) -> f64 {
     let target = (b - a) / epsilon;
 
@@ -12,7 +11,7 @@ fn fibonacci_search(mut a: f64, mut b: f64, epsilon: f64) -> f64 {
         fib.push(next);
     }
 
-    let n = fib.len() - 1; // 迭代总次数
+    let n = fib.len() - 1;
 
     let mut x1 = a + (fib[n - 2] / fib[n]) * (b - a);
     let mut x2 = a + (fib[n - 1] / fib[n]) * (b - a);
@@ -39,7 +38,7 @@ fn fibonacci_search(mut a: f64, mut b: f64, epsilon: f64) -> f64 {
 }
 
 fn quadratic_interpolation(mut a: f64, mut c: f64, epsilon: f64) -> f64 {
-    let mut b = (a + c) / 2.0; // 取中点作为初始三点之一
+    let mut b = (a + c) / 2.0;
     let mut x_old = f64::MAX;
 
     loop {
@@ -47,7 +46,6 @@ fn quadratic_interpolation(mut a: f64, mut c: f64, epsilon: f64) -> f64 {
         let fb = f(b);
         let fc = f(c);
 
-        // 二次插值公式计算极值点 x_new
         let num = (b - a).powi(2) * (fb - fc) - (b - c).powi(2) * (fb - fa);
         let den = (b - a) * (fb - fc) - (b - c) * (fb - fa);
 
@@ -59,7 +57,6 @@ fn quadratic_interpolation(mut a: f64, mut c: f64, epsilon: f64) -> f64 {
 
         x_old = x_new;
 
-        // 更新区间点 (保持 a < b < c 且 x_new 在其中)
         if x_new > b {
             if f(x_new) > fb {
                 c = x_new;

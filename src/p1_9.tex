@@ -1,0 +1,165 @@
+\documentclass{article}
+\textheight 23.5cm \textwidth 15.8cm
+%\leftskip -1cm
+\topmargin -1.5cm \oddsidemargin 0.3cm \evensidemargin -0.3cm
+%\documentclass[final]{siamltex}
+
+\usepackage{graphicx}
+\usepackage{epsfig}
+\usepackage{amsmath}
+\usepackage{amsthm}
+\usepackage{amssymb}
+\usepackage{mathrsfs}
+\usepackage{float}
+\usepackage{multirow}
+\usepackage{verbatim}
+\usepackage{fancyhdr}
+\usepackage{subfigure}
+\usepackage{color}
+\usepackage{mathtools}
+\usepackage{mathrsfs}
+%\usepackage{natbib}
+\usepackage{sectsty}
+%\usepackage[title]{appendix}
+\usepackage{threeparttable}
+\usepackage{dcolumn}
+\usepackage{booktabs}
+\usepackage{indentfirst}
+\usepackage{setspace}
+\usepackage{bm}
+\usepackage{enumerate}
+\usepackage{geometry}
+
+\title{Problem 1.9: Inexact Line Search for the Rosenbrock Function}
+\author{Tianyang Li}
+
+\begin{document}
+\maketitle
+
+\section{Introduction}
+
+This problem considers the inexact one-dimensional line search
+\[
+    \min_{\alpha \ge 0} \varphi(\alpha) = f(\bm{x}_k + \alpha \bm{p}_k)
+\]
+for the Rosenbrock function
+\[
+    f(x_1, x_2) = 100(x_2 - x_1^2)^2 + (1 - x_1)^2.
+\]
+The given point and search direction are
+\[
+    \bm{x}_k = (-1, 1)^T, \qquad \bm{p}_k = (1, 1)^T.
+\]
+The goal is to determine a suitable step size $\alpha$ along this direction.
+
+\section{Method}
+
+Substituting
+\[
+    \bm{x}_k + \alpha \bm{p}_k = (-1 + \alpha, 1 + \alpha)^T
+\]
+into the Rosenbrock function gives the one-dimensional objective
+\[
+    \varphi(\alpha) = 100\alpha^4 - 600\alpha^3 + 901\alpha^2 - 4\alpha + 4.
+\]
+Its derivative is
+\[
+    \varphi'(\alpha) = 400\alpha^3 - 1800\alpha^2 + 1802\alpha - 4.
+\]
+
+At the starting point,
+\[
+    \nabla f(-1, 1) = (-4, 0)^T,
+\]
+so the directional derivative is
+\[
+    \nabla f(\bm{x}_k)^T \bm{p}_k = (-4, 0)
+    \begin{pmatrix}
+        1 \\
+        1
+    \end{pmatrix}
+    = -4 < 0.
+\]
+Therefore $\bm{p}_k$ is a descent direction.
+
+For the inexact line search, I use the Armijo backtracking rule with
+\[
+    \alpha_0 = 1, \qquad \rho = 0.5, \qquad c_1 = 10^{-4}.
+\]
+The Armijo condition is
+\[
+    \varphi(\alpha) \le \varphi(0) + c_1 \alpha \varphi'(0).
+\]
+Since $\varphi(0) = 4$ and $\varphi'(0) = -4$, this becomes
+\[
+    \varphi(\alpha) \le 4 - 0.0004\alpha.
+\]
+
+\section{Result}
+
+As a reference, solving $\varphi'(\alpha) = 0$ on $\alpha \ge 0$ gives three stationary points:
+\[
+    \alpha \approx 0.002225, \qquad \alpha \approx 1.498886, \qquad \alpha \approx 2.998889.
+\]
+Their corresponding function values are
+\[
+    \varphi(0.002225) \approx 3.995554,
+\]
+\[
+    \varphi(1.498886) \approx 506.500557,
+\]
+\[
+    \varphi(2.998889) \approx 0.998889.
+\]
+Hence the exact line-search minimizer along this ray is
+\[
+    \alpha_* \approx 2.998889.
+\]
+
+Using Armijo backtracking, the tested step sizes are shown in Table~\ref{tab:armijo}.
+
+\begin{table}[H]
+    \centering
+    \begin{tabular}{ccccc}
+        \toprule
+        Iteration & $\alpha$ & $\varphi(\alpha)$ & Armijo right-hand side & Accept \\
+        \midrule
+        1         & 1.000000 & 401.000000        & 3.999600               & no     \\
+        2         & 0.500000 & 158.500000        & 3.999800               & no     \\
+        3         & 0.250000 & 50.328125         & 3.999900               & no     \\
+        4         & 0.125000 & 16.430664         & 3.999950               & no     \\
+        5         & 0.062500 & 7.124573          & 3.999975               & no     \\
+        6         & 0.031250 & 4.736668          & 3.999988               & no     \\
+        7         & 0.015625 & 4.155188          & 3.999994               & no     \\
+        8         & 0.007812 & 4.023457          & 3.999997               & no     \\
+        9         & 0.003906 & 3.998087          & 3.999998               & yes    \\
+        \bottomrule
+    \end{tabular}
+    \caption{Armijo backtracking line search results.}
+    \label{tab:armijo}
+\end{table}
+
+Therefore the accepted inexact step size is
+\[
+    \alpha = 0.003906.
+\]
+The new point is
+\[
+    \bm{x}_{k+1} = \bm{x}_k + \alpha \bm{p}_k
+    = (-1, 1)^T + 0.003906(1, 1)^T
+    \approx (-0.996094, 1.003906)^T.
+\]
+At this point,
+\[
+    f(\bm{x}_{k+1}) = \varphi(0.003906) \approx 3.998087.
+\]
+
+\section{Conclusion}
+
+For the Rosenbrock function at $\bm{x}_k = (-1,1)^T$ along the direction $\bm{p}_k = (1,1)^T$, the induced one-dimensional objective is a quartic polynomial. The direction is indeed a descent direction because the directional derivative is negative at the starting point. Using Armijo backtracking with $\alpha_0 = 1$, $\rho = 0.5$, and $c_1 = 10^{-4}$, the first acceptable inexact line-search step is
+\[
+    \alpha = 0.003906.
+\]
+This step decreases the objective from $4$ to approximately $3.998087$. For comparison, the exact minimizer along the same ray is much larger, namely $\alpha_* \approx 2.998889$, with a smaller function value of about $0.998889$. This shows that inexact line search produces a conservative but valid descent step without solving the one-dimensional minimization problem exactly.
+
+\end{document}
